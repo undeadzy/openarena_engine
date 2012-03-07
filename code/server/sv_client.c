@@ -1351,7 +1351,7 @@ static void SV_VerifyPaks_f( client_t *cl ) {
 			cl->lastSnapshotTime = 0;
 			cl->state = CS_ACTIVE;
 			SV_SendClientSnapshot( cl );
-			SV_DropClient( cl, "Unpure client detected. Invalid .PK3 files referenced!" );
+			SV_DropClient( cl, "Invalid .PK3 files. Enabling auto-download might help." );
 		}
 	}
 }
@@ -1562,7 +1562,8 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
 	if (clientOK) {
 		// pass unknown strings to the game
 		if (!u->name && sv.state == SS_GAME && (cl->state == CS_ACTIVE || cl->state == CS_PRIMED)) {
-			Cmd_Args_Sanitize();
+			if(strcmp(Cmd_Argv(0), "say") && strcmp(Cmd_Argv(0), "say_team") )
+				Cmd_Args_Sanitize(); //remove \n, \r and ; from string. We don't do that for say-commands because it makes people mad (understandebly)
 			VM_Call( gvm, GAME_CLIENT_COMMAND, cl - svs.clients );
 		}
 	}

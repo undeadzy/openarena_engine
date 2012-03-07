@@ -173,6 +173,9 @@ static void SV_Map_f( void ) {
 	// force latched values to get set
 	Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH );
 
+	//Notice that we have done a restart
+	sv_dorestart->integer = 0;
+
 	cmd = Cmd_Argv(0);
 	if( Q_stricmpn( cmd, "sp", 2 ) == 0 ) {
 		Cvar_SetValue( "g_gametype", GT_SINGLE_PLAYER );
@@ -262,9 +265,10 @@ static void SV_MapRestart_f( void ) {
 
 	// check for changes in variables that can't just be restarted
 	// check for maxclients change
-	if ( sv_maxclients->modified || sv_gametype->modified ) {
+	if ( sv_maxclients->modified || sv_gametype->modified || sv_dorestart->integer ) {
 		char	mapname[MAX_QPATH];
 
+		sv_dorestart->integer = 0;
 		Com_Printf( "variable change -- restarting.\n" );
 		// restart the map the slow way
 		Q_strncpyz( mapname, Cvar_VariableString( "mapname" ), sizeof( mapname ) );

@@ -426,6 +426,11 @@ extern	cvar_t	*cl_autoRecordDemo;
 
 extern	cvar_t	*cl_consoleKeys;
 
+extern cvar_t *cl_consoleType;
+extern cvar_t *cl_consoleColor[4];
+
+extern cvar_t *cl_consoleHeight;
+
 #ifdef USE_MUMBLE
 extern	cvar_t	*cl_useMumble;
 extern	cvar_t	*cl_mumbleScale;
@@ -548,6 +553,8 @@ void Con_PageDown( void );
 void Con_Top( void );
 void Con_Bottom( void );
 void Con_Close( void );
+
+void Con_SetFrac( const float conFrac );
 
 void CL_LoadConsoleHistory( void );
 void CL_SaveConsoleHistory( void );

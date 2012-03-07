@@ -253,7 +253,13 @@ PROTOCOL
 */
 
 #define	PROTOCOL_VERSION	71
-#define PROTOCOL_LEGACY_VERSION	68
+
+// Normally, legacy protocol = 68 but OA uses 71.
+//Open Arena up to 0.7.6 used 68
+//Open Arena 0.7.7 used 69
+//Open Arena 0.8.0 used protocol 70
+//Open Arena 0.8.x (0.8.1+) protocol 71
+#define PROTOCOL_LEGACY_VERSION	71
 // 1.31 - 67
 
 // maintain a list of compatible protocols for demo playing
@@ -265,7 +271,7 @@ extern int demo_protocols[];
 #endif
 // override on command line, config files etc.
 #ifndef MASTER_SERVER_NAME
-#define MASTER_SERVER_NAME	"master.quake3arena.com"
+#define MASTER_SERVER_NAME	"dpmaster.deathmask.net"
 #endif
 
 #ifndef STANDALONE
@@ -700,8 +706,8 @@ int		FS_Seek( fileHandle_t f, long offset, int origin );
 
 qboolean FS_FilenameCompare( const char *s1, const char *s2 );
 
-const char *FS_GamePureChecksum( void );
-// Returns the checksum of the pk3 from which the server loaded the qagame.qvm
+//const char *FS_GamePureChecksum( void );
+// Returns the checksum of the pk3 from which the server loaded the qagame.qvm (this is never used!)
 
 const char *FS_LoadedPakNames( void );
 const char *FS_LoadedPakChecksums( void );

@@ -635,6 +635,7 @@ void SV_Init (void)
 	Cvar_Get ("fraglimit", "20", CVAR_SERVERINFO);
 	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO);
 	sv_gametype = Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH );
+	sv_dorestart = Cvar_Get ("sv_dorestart", "0",0);
 	Cvar_Get ("sv_keywords", "", CVAR_SERVERINFO);
 	sv_mapname = Cvar_Get ("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
 	sv_privateClients = Cvar_Get ("sv_privateClients", "0", CVAR_SERVERINFO);
@@ -686,6 +687,7 @@ void SV_Init (void)
 #ifndef STANDALONE
 	sv_strictAuth = Cvar_Get ("sv_strictAuth", "1", CVAR_ARCHIVE );
 #endif
+	sv_public = Cvar_Get( "sv_public", "0", 0);
 	sv_banFile = Cvar_Get("sv_banFile", "serverbans.dat", CVAR_ARCHIVE);
 
 	// initialize bot cvars so they are listed and can be set before loading the botlib

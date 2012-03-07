@@ -47,7 +47,7 @@ vec4_t		colorLtGrey	= {0.75, 0.75, 0.75, 1};
 vec4_t		colorMdGrey	= {0.5, 0.5, 0.5, 1};
 vec4_t		colorDkGrey	= {0.25, 0.25, 0.25, 1};
 
-vec4_t	g_color_table[8] =
+vec4_t	g_color_table[9] =
 	{
 	{0.0, 0.0, 0.0, 1.0},
 	{1.0, 0.0, 0.0, 1.0},
@@ -57,6 +57,7 @@ vec4_t	g_color_table[8] =
 	{0.0, 1.0, 1.0, 1.0},
 	{1.0, 0.0, 1.0, 1.0},
 	{1.0, 1.0, 1.0, 1.0},
+        {1.00f, 0.43f, 0.00f, 1.00f},
 	};
 
 
@@ -895,6 +896,139 @@ int	PlaneTypeForNormal (vec3_t normal) {
 	return PLANE_NON_AXIAL;
 }
 */
+
+/*
+=================
+Matrix4Compare
+=================
+*/
+qboolean Matrix4Compare(const float a[16], const float b[16])
+{
+	int i;
+
+	for ( i = 0; i < 16; i++ )
+		if ( a[i] != b[i] )
+			return qfalse;
+
+	return qtrue;
+}
+
+/*
+=================
+Matrix4Copy
+=================
+*/
+void Matrix4Copy(const float in[16], float out[16])
+{
+#if id386_sse && defined __GNUC__ && 0
+	asm volatile
+	(
+	"movups         (%%edx),        %%xmm0\n"
+	"movups         0x10(%%edx),    %%xmm1\n"
+	"movups         0x20(%%edx),    %%xmm2\n"
+	"movups         0x30(%%edx),    %%xmm3\n"
+
+	"movups         %%xmm0,         (%%eax)\n"
+	"movups         %%xmm1,         0x10(%%eax)\n"
+	"movups         %%xmm2,         0x20(%%eax)\n"
+	"movups         %%xmm3,         0x30(%%eax)\n"
+	:
+	: "a"( out ), "d"( in )
+	: "memory"
+		);
+#elif id386_3dnow && defined __GNUC__
+	asm volatile
+	(
+	"femms\n"
+	"movq           (%%edx),        %%mm0\n"
+	"movq           8(%%edx),       %%mm1\n"
+	"movq           16(%%edx),      %%mm2\n"
+	"movq           24(%%edx),      %%mm3\n"
+	"movq           32(%%edx),      %%mm4\n"
+	"movq           40(%%edx),      %%mm5\n"
+	"movq           48(%%edx),      %%mm6\n"
+	"movq           56(%%edx),      %%mm7\n"
+
+	"movq           %%mm0,          (%%eax)\n"
+	"movq           %%mm1,          8(%%eax)\n"
+	"movq           %%mm2,          16(%%eax)\n"
+	"movq           %%mm3,          24(%%eax)\n"
+	"movq           %%mm4,          32(%%eax)\n"
+	"movq           %%mm5,          40(%%eax)\n"
+	"movq           %%mm6,          48(%%eax)\n"
+	"movq           %%mm7,          56(%%eax)\n"
+	"femms\n"
+	:
+	: "a"(out), "d"(in)
+	: "memory"
+	);
+#else
+        out[ 0] = in[ 0];       out[ 4] = in[ 4];       out[ 8] = in[ 8];       out[12] = in[12];
+        out[ 1] = in[ 1];       out[ 5] = in[ 5];       out[ 9] = in[ 9];       out[13] = in[13];
+		out[ 2] = in[ 2];       out[ 6] = in[ 6];       out[10] = in[10];       out[14] = in[14];
+		out[ 3] = in[ 3];       out[ 7] = in[ 7];       out[11] = in[11];       out[15] = in[15];
+#endif
+}
+
+/*
+=================
+Matrix4Multiply
+=================
+*/
+void Matrix4Multiply(const float a[16], const float b[16], float out[16])
+{
+#if id386_sse
+	int				i;
+	__m128			_t0, _t1, _t2, _t3, _t4, _t5, _t6, _t7;
+
+	_t4 = _mm_loadu_ps(&a[0]);
+	_t5 = _mm_loadu_ps(&a[4]);
+	_t6 = _mm_loadu_ps(&a[8]);
+	_t7 = _mm_loadu_ps(&a[12]);
+
+	for(i = 0; i < 4; i++)
+	{
+		_t0 = _mm_load1_ps(&b[i * 4 + 0]);
+		_t0 = _mm_mul_ps(_t4, _t0);
+
+		_t1 = _mm_load1_ps(&b[i * 4 + 1]);
+		_t1 = _mm_mul_ps(_t5, _t1);
+
+		_t2 = _mm_load1_ps(&b[i * 4 + 2]);
+		_t2 = _mm_mul_ps(_t6, _t2);
+
+		_t3 = _mm_load1_ps(&b[i * 4 + 3]);
+		_t3 = _mm_mul_ps(_t7, _t3);
+
+		_t1 = _mm_add_ps(_t0, _t1);
+		_t2 = _mm_add_ps(_t1, _t2);
+		_t3 = _mm_add_ps(_t2, _t3);
+
+		_mm_storeu_ps(&out[i * 4], _t3);
+	}
+
+#else
+        out[ 0] = b[ 0]*a[ 0] + b[ 1]*a[ 4] + b[ 2]*a[ 8] + b[ 3]*a[12];
+        out[ 1] = b[ 0]*a[ 1] + b[ 1]*a[ 5] + b[ 2]*a[ 9] + b[ 3]*a[13];
+		out[ 2] = b[ 0]*a[ 2] + b[ 1]*a[ 6] + b[ 2]*a[10] + b[ 3]*a[14];
+		out[ 3] = b[ 0]*a[ 3] + b[ 1]*a[ 7] + b[ 2]*a[11] + b[ 3]*a[15];
+
+		out[ 4] = b[ 4]*a[ 0] + b[ 5]*a[ 4] + b[ 6]*a[ 8] + b[ 7]*a[12];
+		out[ 5] = b[ 4]*a[ 1] + b[ 5]*a[ 5] + b[ 6]*a[ 9] + b[ 7]*a[13];
+		out[ 6] = b[ 4]*a[ 2] + b[ 5]*a[ 6] + b[ 6]*a[10] + b[ 7]*a[14];
+		out[ 7] = b[ 4]*a[ 3] + b[ 5]*a[ 7] + b[ 6]*a[11] + b[ 7]*a[15];
+
+		out[ 8] = b[ 8]*a[ 0] + b[ 9]*a[ 4] + b[10]*a[ 8] + b[11]*a[12];
+		out[ 9] = b[ 8]*a[ 1] + b[ 9]*a[ 5] + b[10]*a[ 9] + b[11]*a[13];
+		out[10] = b[ 8]*a[ 2] + b[ 9]*a[ 6] + b[10]*a[10] + b[11]*a[14];
+		out[11] = b[ 8]*a[ 3] + b[ 9]*a[ 7] + b[10]*a[11] + b[11]*a[15];
+
+		out[12] = b[12]*a[ 0] + b[13]*a[ 4] + b[14]*a[ 8] + b[15]*a[12];
+		out[13] = b[12]*a[ 1] + b[13]*a[ 5] + b[14]*a[ 9] + b[15]*a[13];
+		out[14] = b[12]*a[ 2] + b[13]*a[ 6] + b[14]*a[10] + b[15]*a[14];
+		out[15] = b[12]*a[ 3] + b[13]*a[ 7] + b[14]*a[11] + b[15]*a[15];
+#endif
+}
 
 
 /*

@@ -28,7 +28,7 @@ cvar_t		*cvar_vars = NULL;
 cvar_t		*cvar_cheats;
 int			cvar_modifiedFlags;
 
-#define	MAX_CVARS	1024
+#define	MAX_CVARS	2000
 cvar_t		cvar_indexes[MAX_CVARS];
 int			cvar_numIndexes;
 
@@ -342,7 +342,7 @@ cvar_t *Cvar_Get( const char *var_name, const char *var_value, int flags ) {
 			Z_Free( var->resetString );
 			var->resetString = CopyString( var_value );
 
-			if(flags & CVAR_ROM)
+			if( (flags & CVAR_ROM) && !(flags & CVAR_ARCHIVE) )
 			{
 				// this variable was set by the user,
 				// so force it to value given by the engine.

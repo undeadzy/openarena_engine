@@ -1218,6 +1218,7 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 						if(!FS_IsExt(filename, ".shader", len) &&
 						   !FS_IsExt(filename, ".txt", len) &&
 						   !FS_IsExt(filename, ".cfg", len) &&
+						   Q_stricmp(filename,"qagame.qvm") != 0 && //Never reference qagame because it prevents serverside mods
 						   !FS_IsExt(filename, ".config", len) &&
 						   !FS_IsExt(filename, ".bot", len) &&
 						   !FS_IsExt(filename, ".arena", len) &&
@@ -1228,8 +1229,9 @@ long FS_FOpenFileReadDir(const char *filename, searchpath_t *search, fileHandle_
 						}
 					}
 
-					if(strstr(filename, "qagame.qvm"))
-						pak->referenced |= FS_QAGAME_REF;
+					//Do not reference qagame.qvm, it need not be part of pure check, because te
+					//if(strstr(filename, "qagame.qvm"))
+					//	pak->referenced |= FS_QAGAME_REF;
 					if(strstr(filename, "cgame.qvm"))
 						pak->referenced |= FS_CGAME_REF;
 					if(strstr(filename, "ui.qvm"))
@@ -3444,6 +3446,7 @@ FS_GamePureChecksum
 Returns the checksum of the pk3 from which the server loaded the qagame.qvm
 =====================
 */
+#if 0
 const char *FS_GamePureChecksum( void ) {
 	static char	info[MAX_STRING_TOKENS];
 	searchpath_t *search;
@@ -3461,6 +3464,7 @@ const char *FS_GamePureChecksum( void ) {
 
 	return info;
 }
+#endif
 
 /*
 =====================

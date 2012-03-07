@@ -54,12 +54,14 @@ cvar_t	*sv_dlRate;
 cvar_t	*sv_minPing;
 cvar_t	*sv_maxPing;
 cvar_t	*sv_gametype;
+cvar_t	*sv_dorestart;
 cvar_t	*sv_pure;
 cvar_t	*sv_floodProtect;
 cvar_t	*sv_lanForceRate; // dedicated 1 (LAN) server forces local client rates to 99999 (bug #491)
 #ifndef STANDALONE
 cvar_t	*sv_strictAuth;
 #endif
+cvar_t	*sv_public;
 cvar_t	*sv_banFile;
 
 serverBan_t serverBans[SERVER_MAXBANS];
@@ -245,7 +247,7 @@ void SV_MasterHeartbeat(const char *message)
 	netenabled = Cvar_VariableIntegerValue("net_enabled");
 
 	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
-	if (!com_dedicated || com_dedicated->integer != 2 || !(netenabled & (NET_ENABLEV4 | NET_ENABLEV6)))
+	if ( ( (!com_dedicated || com_dedicated->integer != 2) && !(sv_public->integer) ) || !(netenabled & (NET_ENABLEV4 | NET_ENABLEV6)))
 		return;		// only dedicated servers send heartbeats
 
 	// if not time yet, don't send anything
