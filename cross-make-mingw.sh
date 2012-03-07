@@ -5,8 +5,11 @@ CMD_PREFIX="i586-mingw32msvc i686-w64-mingw32";
 if [ "X$CC" = "X" ]; then
     for check in $CMD_PREFIX; do
         full_check="${check}-gcc"
-	if [ ! $(which "$full_check") = "" ]; then
+	if [ -e "$(which \"$full_check\")" ]; then
 	    export CC="$full_check"
+	else
+		echo "Falling back to default GCC"
+		export CC=gcc.exe
 	fi
     done
 fi
@@ -14,8 +17,11 @@ fi
 if [ "X$WINDRES" = "X" ]; then
     for check in $CMD_PREFIX; do
         full_check="${check}-windres"
-	if [ ! $(which "$full_check") = "" ]; then
+	if [ -e "$(which \"$full_check\")" ]; then
 	    export WINDRES="$full_check"
+	else
+		echo "Falling back to default WINDRES"
+		WINDRES=windres.exe
 	fi
     done
 fi

@@ -370,7 +370,12 @@ ifneq (,$(findstring "$(PLATFORM)", "linux" "gnu_kfreebsd" "kfreebsd-gnu"))
   endif
 
   ifeq ($(USE_CODEC_VORBIS),1)
-    CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+#Sago: Here I get vorbis to compile in Windows:
+    ifeq ($(PLATFORM),mingw32)
+      CLIENT_LIBS += $(LIBSDIR)/win32/libvorbisfile.a $(LIBSDIR)/win32/libvorbis.a $(LIBSDIR)/win32/libogg.a
+    else
+      CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    endif
   endif
 
   ifeq ($(USE_MUMBLE),1)
@@ -436,7 +441,11 @@ ifeq ($(PLATFORM),darwin)
   endif
 
   ifeq ($(USE_CODEC_VORBIS),1)
-    CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    ifeq ($(PLATFORM),mingw32)
+      CLIENT_LIBS += $(LIBSDIR)/win32/libvorbisfile.a $(LIBSDIR)/win32/libvorbis.a $(LIBSDIR)/win32/libogg.a
+    else
+      CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    endif
   endif
 
   BASE_CFLAGS += -D_THREAD_SAFE=1
@@ -541,7 +550,11 @@ ifeq ($(PLATFORM),mingw32)
   endif
 
   ifeq ($(USE_CODEC_VORBIS),1)
-    CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    ifeq ($(PLATFORM),mingw32)
+      CLIENT_LIBS += $(LIBSDIR)/win32/libvorbisfile.a $(LIBSDIR)/win32/libvorbis.a $(LIBSDIR)/win32/libogg.a
+    else
+      CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    endif
   endif
 
   ifeq ($(ARCH),x86)
@@ -678,7 +691,11 @@ ifeq ($(PLATFORM),openbsd)
   endif
 
   ifeq ($(USE_CODEC_VORBIS),1)
-    CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    ifeq ($(PLATFORM),mingw32)
+      CLIENT_LIBS += $(LIBSDIR)/win32/libvorbisfile.a $(LIBSDIR)/win32/libvorbis.a $(LIBSDIR)/win32/libogg.a
+    else
+      CLIENT_LIBS += -lvorbisfile -lvorbis -logg
+    endif
   endif
 
   ifeq ($(USE_CURL),1) 
