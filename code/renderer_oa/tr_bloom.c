@@ -403,7 +403,6 @@ static void R_Bloom_LensEffect( void )
  Tcpp: sorry for my poor English skill.
  */
 static void R_Bloom_Cascaded( void ){
-	int		i, j, k; // LEILEI - kill warnings
 	int scale;
 	int oldWorkW, oldWorkH;
 	int newWorkW, newWorkH;
