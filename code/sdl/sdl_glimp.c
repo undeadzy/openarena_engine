@@ -39,7 +39,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <stdlib.h>
 #include <math.h>
 
-#include "../renderer/tr_local.h"
+#include TR_CONFIG_H
+#include TR_LOCAL_H
 #include "../client/client.h"
 #include "../sys/sys_local.h"
 #include "sdl_icon.h"

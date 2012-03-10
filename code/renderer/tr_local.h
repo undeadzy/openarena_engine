@@ -21,15 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-#ifndef TR_LOCAL_H
-#define TR_LOCAL_H
+#ifndef __TR_LOCAL_H__
+#define __TR_LOCAL_H__
 
+#include TR_CONFIG_H
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qfiles.h"
 #include "../qcommon/qcommon.h"
-#include "tr_public.h"
-#include "qgl.h"
-#include "iqm.h"
+#include TR_PUBLIC_H
+#include QGL_H
+#include IQM_H
 
 #define GL_INDEX_TYPE		GL_UNSIGNED_INT
 typedef unsigned int glIndex_t;
@@ -1748,4 +1749,4 @@ void R_DoneFreeType( void );
 void RE_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font);
 
 
-#endif //TR_LOCAL_H
+#endif //__TR_LOCAL_H__

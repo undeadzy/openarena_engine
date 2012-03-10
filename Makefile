@@ -1002,12 +1002,17 @@ endif
 
 define DO_CC
 $(echo_cmd) "CC $<"
-$(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+$(Q)$(CC) $(NOTSHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -DTR_CONFIG_H=\"../renderer/tr_config.h\" -o $@ -c $<
 endef
 
 define DO_REF_CC
 $(echo_cmd) "REF_CC $<"
-$(Q)$(CC) $(SHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -o $@ -c $<
+$(Q)$(CC) $(SHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE)  -DTR_CONFIG_H=\"../renderer/tr_config.h\" -o $@ -c $<
+endef
+
+define DO_REF_OA_CC
+$(echo_cmd) "REF_OA_CC $<"
+$(Q)$(CC) $(SHLIBCFLAGS) $(CFLAGS) $(CLIENT_CFLAGS) $(OPTIMIZE) -DTR_CONFIG_H=\"../renderer_oa/tr_config.h\" -o $@ -c $<
 endef
 
 define DO_SMP_CC
@@ -1174,7 +1179,6 @@ makedirs:
 	@if [ ! -d $(B)/renderer ];then $(MKDIR) $(B)/renderer;fi
 	@if [ ! -d $(B)/renderer_oa ];then $(MKDIR) $(B)/renderer_oa;fi
 	@if [ ! -d $(B)/renderersmp ];then $(MKDIR) $(B)/renderersmp;fi
-	@if [ ! -d $(B)/renderersmp_oa ];then $(MKDIR) $(B)/renderersmp_oa;fi
 	@if [ ! -d $(B)/ded ];then $(MKDIR) $(B)/ded;fi
 	@if [ ! -d $(B)/$(BASEGAME) ];then $(MKDIR) $(B)/$(BASEGAME);fi
 	@if [ ! -d $(B)/$(BASEGAME)/cgame ];then $(MKDIR) $(B)/$(BASEGAME)/cgame;fi
@@ -1479,6 +1483,42 @@ else
 	$(B)/client/con_tty.o
 endif
 
+Q3ROAOBJ = \
+  $(B)/renderer_oa/tr_animation.o \
+  $(B)/renderer_oa/tr_backend.o \
+  $(B)/renderer_oa/tr_bsp.o \
+  $(B)/renderer_oa/tr_cmds.o \
+  $(B)/renderer_oa/tr_curve.o \
+  $(B)/renderer_oa/tr_flares.o \
+  $(B)/renderer_oa/tr_font.o \
+  $(B)/renderer_oa/tr_image.o \
+  $(B)/renderer_oa/tr_image_png.o \
+  $(B)/renderer_oa/tr_image_jpg.o \
+  $(B)/renderer_oa/tr_image_bmp.o \
+  $(B)/renderer_oa/tr_image_tga.o \
+  $(B)/renderer_oa/tr_image_pcx.o \
+  $(B)/renderer_oa/tr_init.o \
+  $(B)/renderer_oa/tr_light.o \
+  $(B)/renderer_oa/tr_main.o \
+  $(B)/renderer_oa/tr_marks.o \
+  $(B)/renderer_oa/tr_mesh.o \
+  $(B)/renderer_oa/tr_model.o \
+  $(B)/renderer_oa/tr_model_iqm.o \
+  $(B)/renderer_oa/tr_noise.o \
+  $(B)/renderer_oa/tr_scene.o \
+  $(B)/renderer_oa/tr_shade.o \
+  $(B)/renderer_oa/tr_shade_calc.o \
+  $(B)/renderer_oa/tr_shader.o \
+  $(B)/renderer_oa/tr_shadows.o \
+  $(B)/renderer_oa/tr_sky.o \
+  $(B)/renderer_oa/tr_surface.o \
+  $(B)/renderer_oa/tr_world.o \
+  \
+  $(B)/renderer_oa/tr_bloom.o \
+  $(B)/renderer_oa/tr_extensions.o \
+  \
+  $(B)/renderer/sdl_gamma.o
+
 Q3ROBJ = \
   $(B)/renderer/tr_animation.o \
   $(B)/renderer/tr_backend.o \
@@ -1518,10 +1558,16 @@ ifneq ($(USE_RENDERER_DLOPEN), 0)
     $(B)/renderer/puff.o \
     $(B)/renderer/q_math.o \
     $(B)/renderer/tr_subs.o
+
+  Q3ROAOBJ += \
+    $(B)/renderer/q_shared.o \
+    $(B)/renderer/puff.o \
+    $(B)/renderer/q_math.o \
+    $(B)/renderer/tr_subs.o
 endif
 
 ifneq ($(USE_INTERNAL_JPEG),0)
-  Q3ROBJ += \
+  JPGOBJ += \
     $(B)/renderer/jaricom.o \
     $(B)/renderer/jcapimin.o \
     $(B)/renderer/jcapistd.o \
@@ -1568,100 +1614,6 @@ ifneq ($(USE_INTERNAL_JPEG),0)
     $(B)/renderer/jquant1.o \
     $(B)/renderer/jquant2.o \
     $(B)/renderer/jutils.o
-endif
-
-Q3ROAOBJ = \
-  $(B)/renderer_oa/tr_animation.o \
-  $(B)/renderer_oa/tr_backend.o \
-  $(B)/renderer_oa/tr_bsp.o \
-  $(B)/renderer_oa/tr_cmds.o \
-  $(B)/renderer_oa/tr_curve.o \
-  $(B)/renderer_oa/tr_flares.o \
-  $(B)/renderer_oa/tr_font.o \
-  $(B)/renderer_oa/tr_image.o \
-  $(B)/renderer_oa/tr_image_png.o \
-  $(B)/renderer_oa/tr_image_jpg.o \
-  $(B)/renderer_oa/tr_image_bmp.o \
-  $(B)/renderer_oa/tr_image_tga.o \
-  $(B)/renderer_oa/tr_image_pcx.o \
-  $(B)/renderer_oa/tr_init.o \
-  $(B)/renderer_oa/tr_light.o \
-  $(B)/renderer_oa/tr_main.o \
-  $(B)/renderer_oa/tr_marks.o \
-  $(B)/renderer_oa/tr_mesh.o \
-  $(B)/renderer_oa/tr_model.o \
-  $(B)/renderer_oa/tr_model_iqm.o \
-  $(B)/renderer_oa/tr_noise.o \
-  $(B)/renderer_oa/tr_scene.o \
-  $(B)/renderer_oa/tr_shade.o \
-  $(B)/renderer_oa/tr_shade_calc.o \
-  $(B)/renderer_oa/tr_shader.o \
-  $(B)/renderer_oa/tr_shadows.o \
-  $(B)/renderer_oa/tr_sky.o \
-  $(B)/renderer_oa/tr_surface.o \
-  $(B)/renderer_oa/tr_world.o \
-  \
-  $(B)/renderer_oa/tr_bloom.o \
-  $(B)/renderer_oa/tr_extensions.o \
-  \
-  $(B)/renderer_oa/sdl_gamma.o
-
-ifneq ($(USE_RENDERER_DLOPEN), 0)
-  Q3ROAOBJ += \
-    $(B)/renderer_oa/q_shared.o \
-    $(B)/renderer_oa/puff.o \
-    $(B)/renderer_oa/q_math.o \
-    $(B)/renderer_oa/tr_subs.o
-endif
-
-ifneq ($(USE_INTERNAL_JPEG),0)
-  Q3ROAOBJ += \
-    $(B)/renderer_oa/jaricom.o \
-    $(B)/renderer_oa/jcapimin.o \
-    $(B)/renderer_oa/jcapistd.o \
-    $(B)/renderer_oa/jcarith.o \
-    $(B)/renderer_oa/jccoefct.o  \
-    $(B)/renderer_oa/jccolor.o \
-    $(B)/renderer_oa/jcdctmgr.o \
-    $(B)/renderer_oa/jchuff.o   \
-    $(B)/renderer_oa/jcinit.o \
-    $(B)/renderer_oa/jcmainct.o \
-    $(B)/renderer_oa/jcmarker.o \
-    $(B)/renderer_oa/jcmaster.o \
-    $(B)/renderer_oa/jcomapi.o \
-    $(B)/renderer_oa/jcparam.o \
-    $(B)/renderer_oa/jcprepct.o \
-    $(B)/renderer_oa/jcsample.o \
-    $(B)/renderer_oa/jctrans.o \
-    $(B)/renderer_oa/jdapimin.o \
-    $(B)/renderer_oa/jdapistd.o \
-    $(B)/renderer_oa/jdarith.o \
-    $(B)/renderer_oa/jdatadst.o \
-    $(B)/renderer_oa/jdatasrc.o \
-    $(B)/renderer_oa/jdcoefct.o \
-    $(B)/renderer_oa/jdcolor.o \
-    $(B)/renderer_oa/jddctmgr.o \
-    $(B)/renderer_oa/jdhuff.o \
-    $(B)/renderer_oa/jdinput.o \
-    $(B)/renderer_oa/jdmainct.o \
-    $(B)/renderer_oa/jdmarker.o \
-    $(B)/renderer_oa/jdmaster.o \
-    $(B)/renderer_oa/jdmerge.o \
-    $(B)/renderer_oa/jdpostct.o \
-    $(B)/renderer_oa/jdsample.o \
-    $(B)/renderer_oa/jdtrans.o \
-    $(B)/renderer_oa/jerror.o \
-    $(B)/renderer_oa/jfdctflt.o \
-    $(B)/renderer_oa/jfdctfst.o \
-    $(B)/renderer_oa/jfdctint.o \
-    $(B)/renderer_oa/jidctflt.o \
-    $(B)/renderer_oa/jidctfst.o \
-    $(B)/renderer_oa/jidctint.o \
-    $(B)/renderer_oa/jmemmgr.o \
-    $(B)/renderer_oa/jmemnobs.o \
-    $(B)/renderer_oa/jquant1.o \
-    $(B)/renderer_oa/jquant2.o \
-    $(B)/renderer_oa/jutils.o
 endif
 
 ifeq ($(ARCH),i386)
@@ -1825,12 +1777,6 @@ Q3POBJ += \
 Q3POBJ_SMP += \
   $(B)/renderersmp/sdl_glimp.o
 
-Q3POAOBJ += \
-  $(B)/renderer_oa/sdl_glimp.o
-
-Q3POAOBJ_SMP += \
-  $(B)/renderersmp_oa/sdl_glimp.o
-
 
 ifneq ($(USE_RENDERER_DLOPEN),0)
 $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(LIBSDLMAIN)
@@ -1839,37 +1785,37 @@ $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(LIBSDLMAIN)
 		-o $@ $(Q3OBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(LIBS)
 
-$(B)/renderer_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(Q3POBJ)
+$(B)/renderer_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(Q3POBJ) $(JPGOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(Q3POBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(Q3POBJ) $(JPGOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/renderer_opengl1_smp_$(SHLIBNAME): $(Q3ROBJ) $(Q3POBJ_SMP)
+$(B)/renderer_opengl1_smp_$(SHLIBNAME): $(Q3ROBJ) $(Q3POBJ_SMP) $(JPGOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(Q3POBJ_SMP) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(Q3POBJ_SMP) $(JPGOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/renderer_openarena1_$(SHLIBNAME): $(Q3ROAOBJ) $(Q3POAOBJ)
+$(B)/renderer_openarena1_$(SHLIBNAME): $(Q3ROAOBJ) $(Q3POBJ) $(JPGOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROAOBJ) $(Q3POAOBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROAOBJ) $(Q3POBJ) $(JPGOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/renderer_openarena1_smp_$(SHLIBNAME): $(Q3ROAOBJ) $(Q3POAOBJ_SMP)
+$(B)/renderer_openarena1_smp_$(SHLIBNAME): $(Q3ROAOBJ) $(Q3POBJ_SMP) $(JPGOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROAOBJ) $(Q3POAOBJ_SMP) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROAOBJ) $(Q3POBJ_SMP) $(JPGOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
 else
-$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROAOBJ) $(Q3POAOBJ) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROAOBJ) $(Q3POBJ) $(JPGOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3ROAOBJ) $(Q3POAOBJ) \
+		-o $@ $(Q3OBJ) $(Q3ROAOBJ) $(Q3POBJ) $(JPGOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/$(CLIENTBIN)-smp$(FULLBINEXT): $(Q3OBJ) $(Q3ROAOBJ) $(Q3POAOBJ_SMP) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)-smp$(FULLBINEXT): $(Q3OBJ) $(Q3ROAOBJ) $(Q3POBJ_SMP) $(JPGOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) $(THREAD_LDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3ROAOBJ) $(Q3POAOBJ_SMP) \
+		-o $@ $(Q3OBJ) $(Q3ROAOBJ) $(Q3POBJ_SMP) $(JPGOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 endif
 
@@ -2387,9 +2333,6 @@ $(B)/client/%.o: $(SDLDIR)/%.c
 $(B)/renderersmp/%.o: $(SDLDIR)/%.c
 	$(DO_SMP_CC)
 
-$(B)/renderersmp_oa/%.o: $(SDLDIR)/%.c
-	$(DO_SMP_CC)
-
 $(B)/client/%.o: $(SYSDIR)/%.c
 	$(DO_CC)
 
@@ -2413,17 +2356,13 @@ $(B)/renderer/%.o: $(RDIR)/%.c
 	$(DO_REF_CC)
 
 
-$(B)/renderer_oa/%.o: $(CMDIR)/%.c
-	$(DO_REF_CC)
-
-$(B)/renderer_oa/%.o: $(SDLDIR)/%.c
-	$(DO_REF_CC)
-
-$(B)/renderer_oa/%.o: $(JPDIR)/%.c
-	$(DO_REF_CC)
-
+# Make sure you list the OA version before Q3.
+# If it exists, the OA version will be used instead of Q3.
 $(B)/renderer_oa/%.o: $(ROADIR)/%.c
-	$(DO_REF_CC)
+	$(DO_REF_OA_CC)
+
+$(B)/renderer_oa/%.o: $(RDIR)/%.c
+	$(DO_REF_OA_CC)
 
 
 $(B)/ded/%.o: $(ASMDIR)/%.s
@@ -2549,7 +2488,7 @@ $(B)/$(MISSIONPACK)/qcommon/%.asm: $(CMDIR)/%.c $(Q3LCC)
 # MISC
 #############################################################################
 
-OBJ = $(Q3OBJ) $(Q3POBJ) $(Q3POBJ_SMP) $(Q3POAOBJ) $(Q3POAOBJ_SMP) $(Q3ROBJ) $(Q3ROAOBJ) $(Q3DOBJ) \
+OBJ = $(Q3OBJ) $(Q3POBJ) $(Q3POBJ_SMP) $(Q3ROBJ) $(Q3ROAOBJ) $(Q3DOBJ) $(JPGOBJ) \
   $(MPGOBJ) $(Q3GOBJ) $(Q3CGOBJ) $(MPCGOBJ) $(Q3UIOBJ) $(MPUIOBJ) \
   $(MPGVMOBJ) $(Q3GVMOBJ) $(Q3CGVMOBJ) $(MPCGVMOBJ) $(Q3UIVMOBJ) $(MPUIVMOBJ)
 TOOLSOBJ = $(LBURGOBJ) $(Q3CPPOBJ) $(Q3RCCOBJ) $(Q3LCCOBJ) $(Q3ASMOBJ)

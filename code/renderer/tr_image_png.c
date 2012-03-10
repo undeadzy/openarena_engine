@@ -19,7 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ===========================================================================
 */
 
-#include "tr_local.h"
+#include TR_CONFIG_H
+#include TR_LOCAL_H
 
 #include "../qcommon/puff.h"
 
