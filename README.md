@@ -54,9 +54,6 @@ Changes from 0.8.8 release
   future.
 * Makefile has fewer changes since the recent upstream Makefile makes it easier
   to support standalone games
-* Did not change anything to support ogg since the upstream code now handles it
-  properly
-  - Not (yet) including the code/SDL12/include/{ogg,vorbis} directories
 * cl_yawspeed and cl_pitchspeed are CVAR_ROM instead of removing the variables
   and using a constant.
 * r_aviMotionJpegQuality was left untouched
@@ -67,6 +64,8 @@ Changes from 0.8.8 release
   HEARTBEAT_FOR_MASTER name since the code says to leave it unless you have a
   good reason.
 * Any trivial whitespace changes were left out
+* Added James Canete's opengl2 renderer as a branch
+* GrosBedo added win32 support back to the Makefile
 
 TODO
 ----
@@ -78,7 +77,6 @@ TODO
 * Verify that allowing say/say_team to bypass Cmd_Args_Sanitize is safe.
 * Build in FreeBSD
 * Build in MacOSX
-* Build in Windows (cygwin)
 * Cross compile in Linux for Windows
   - Cross compiling for Windows may require more changes to the Makefile to
     enable ogg vorbis support
@@ -87,8 +85,6 @@ TODO
 * Needs more testing
 * Verify changes with OpenArena developers
 * Potential GLSL debugging fix that was made available after 0.8.8 release.
-* Potentially import James Canete's opengl2 renderer as an optional 3rd renderer
-  - This could be a separate project instead
 
 Original file
 -------------
