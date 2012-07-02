@@ -298,6 +298,14 @@ New commands
 
   which <filename/path>   - print out the path on disk to a loaded item
 
+  execq <filename>        - quiet exec command, doesn't print "execing file.cfg"
+
+  kicknum <client number> - kick a client by number, same as clientkick command
+  kickall                 - kick all clients, similar to "kick all" (but kicks
+                            everyone even if someone is named "all")
+  kickbots                - kick all bots, similar to "kick allbots" (but kicks
+                            all bots even if someone is named "allbots")
+
   tell <client num> <msg> - send message to a single client (new to server)
 
 
@@ -484,6 +492,12 @@ QuakeLive mouse acceleration (patch and this text written by TTimo from id)
 
 
 ---------------------------------------------------- README for Developers -----
+
+pk3dir
+  Ioquake3 has a useful new feature for mappers. Paths in a game directory with
+  the extension ".pk3dir" are treated like pak files. This means you can keep
+  all files specific to your map in one directory tree and easily zip this
+  folder for distribution.
 
 64bit mods
   If you wish to compile external mods as shared libraries on a 64bit platform,
