@@ -8,7 +8,7 @@ It is intended to be as close as possible to 0.8.8 except when it makes
 sense to deviate.
 
 OpenArena 0.8.8 uses r1910 ioquake3 code.  This code currently targets
-r2224 which is the latest.
+r2302 which is the latest.
 
 Switching renderers
 -------------------
