@@ -540,6 +540,7 @@ static src_t srcList[MAX_SRC];
 static int srcCount = 0;
 static int srcActiveCnt = 0;
 static qboolean alSourcesInitialised = qfalse;
+static int lastListenerNumber = -1;
 static vec3_t lastListenerOrigin = { 0.0f, 0.0f, 0.0f };
 
 typedef struct sentity_s
@@ -572,9 +573,6 @@ static void _S_AL_SanitiseVector( vec3_t v, int line )
 		VectorClear( v );
 	}
 }
-
-
-#define AL_THIRD_PERSON_THRESHOLD_SQ (48.0f*48.0f)
 
 /*
 =================
@@ -634,13 +632,15 @@ static void S_AL_ScaleGain(src_t *chksrc, vec3_t origin)
 /*
 =================
 S_AL_HearingThroughEntity
+
+Also see S_Base_HearingThroughEntity
 =================
 */
 static qboolean S_AL_HearingThroughEntity( int entityNum )
 {
 	float	distanceSq;
 
-	if( clc.clientNum == entityNum )
+	if( lastListenerNumber == entityNum )
 	{
 		// FIXME: <tim@ngus.net> 28/02/06 This is an outrageous hack to detect
 		// whether or not the player is rendering in third person or not. We can't
@@ -652,7 +652,7 @@ static qboolean S_AL_HearingThroughEntity( int entityNum )
 				entityList[ entityNum ].origin,
 				lastListenerOrigin );
 
-		if( distanceSq > AL_THIRD_PERSON_THRESHOLD_SQ )
+		if( distanceSq > THIRD_PERSON_THRESHOLD_SQ )
 			return qfalse; //we're the player, but third person
 		else
 			return qtrue;  //we're the player
@@ -2151,6 +2151,7 @@ void S_AL_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], int 
 	orientation[0] = axis[0][0]; orientation[1] = axis[0][1]; orientation[2] = axis[0][2];
 	orientation[3] = axis[2][0]; orientation[4] = axis[2][1]; orientation[5] = axis[2][2];
 
+	lastListenerNumber = entityNum;
 	VectorCopy( sorigin, lastListenerOrigin );
 
 	// Set OpenAL listener paramaters
