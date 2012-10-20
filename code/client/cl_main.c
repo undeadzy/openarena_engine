@@ -3477,8 +3477,8 @@ void CL_Init( void ) {
 
 	rconAddress = Cvar_Get ("rconAddress", "", 0);
 
-	cl_yawspeed = Cvar_Get ("cl_yawspeed", "140", CVAR_ARCHIVE | CVAR_ROM);
-	cl_pitchspeed = Cvar_Get ("cl_pitchspeed", "140", CVAR_ARCHIVE | CVAR_ROM);
+	cl_yawspeed = Cvar_Get ("cl_yawspeed", "140", CVAR_CHEAT);
+	cl_pitchspeed = Cvar_Get ("cl_pitchspeed", "140", CVAR_CHEAT);
 	cl_anglespeedkey = Cvar_Get ("cl_anglespeedkey", "1.5", 0);
 
 	cl_maxpackets = Cvar_Get ("cl_maxpackets", "30", CVAR_ARCHIVE );

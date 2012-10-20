@@ -8,7 +8,7 @@ It is intended to be as close as possible to 0.8.8 except when it makes
 sense to deviate.
 
 OpenArena 0.8.8 uses r1910 ioquake3 code.  This code currently targets
-r2302 which is the latest.
+r2328 which is the latest.
 
 Switching renderers
 -------------------
@@ -77,8 +77,8 @@ Changes from 0.8.8 release
   future.
 * Makefile has fewer changes since the recent upstream Makefile makes it easier
   to support standalone games
-* cl_yawspeed and cl_pitchspeed are CVAR_ROM instead of removing the variables
-  and using a constant.
+* cl_yawspeed and cl_pitchspeed are CVAR_CHEAT instead of removing the
+  variables and using a constant.
 * r_aviMotionJpegQuality was left untouched
 * Enables STANDALONE so the CD key and authorize server related changes are
   no longer needed.
@@ -87,7 +87,8 @@ Changes from 0.8.8 release
   HEARTBEAT_FOR_MASTER name since the code says to leave it unless you have a
   good reason.
 * Any trivial whitespace changes were left out
-* Added James Canete's opengl2 renderer as a branch
+* Added James Canete's Rend2 renderer (v31a+) as a branch named
+  opengl2_renderer
 * GrosBedo added win32 support back to the Makefile
 
 TODO
