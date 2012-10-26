@@ -26,8 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #	include <SDL.h>
 #endif
 
-#include TR_CONFIG_H
-#include TR_LOCAL_H
+#include "../renderer/tr_local.h"
 #include "../qcommon/qcommon.h"
 
 /*

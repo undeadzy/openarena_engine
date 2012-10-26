@@ -8,8 +8,7 @@
 #  include <SDL.h>
 #endif
 
-#include TR_CONFIG_H
-#include TR_LOCAL_H
+#include "tr_local.h"
 
 // GL_ARB_shader_objects
 GLvoid (APIENTRYP qglDeleteObjectARB) (GLhandleARB obj);

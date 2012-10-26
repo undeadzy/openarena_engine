@@ -24,14 +24,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __TR_LOCAL_H__
 #define __TR_LOCAL_H__
 
-#include TR_CONFIG_H
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qfiles.h"
 #include "../qcommon/qcommon.h"
-#include TR_PUBLIC_H
-#include QGL_H
-#include "qgl_extra.h"
-#include IQM_H
+#include "../renderer/tr_public.h"
+#include "qgl.h"
+#include "../renderer/iqm.h"
 
 #define GL_INDEX_TYPE		GL_UNSIGNED_INT
 typedef unsigned int glIndex_t;
