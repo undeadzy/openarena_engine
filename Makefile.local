@@ -15,10 +15,10 @@ VERSION=1.36+0.8.8
 BUILD_CLIENT_SMP=0
 
 # This doesn't work with OpenArena 0.8.8.
-BUILD_RENDERER_REND2=0
+BUILD_RENDERER_REND2=1
 
 # You can disable the renderer libraries and build in the OA by default
-#USE_RENDERER_DLOPEN=0
+USE_RENDERER_DLOPEN=0
 
 # You can change these although you probably don't need to
 CLIENTBIN=openarena

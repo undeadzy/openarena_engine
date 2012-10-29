@@ -74,6 +74,9 @@ Development
 Changes from 0.8.8 release
 --------------------------
 
+* Sync with upstream so openarena.i386 uses the base ioquake3, openarena_rend2.i386
+  uses Canete's Rend2 and openarena_oa.i386 uses the OA 0.8.8 renderer
+  (plus minor updates).
 * OA's renderer is now in renderer_oa and the base ioquake3 renderer is left
   untouched
 * This does not remove the game or cgame files.  They are never referenced or
