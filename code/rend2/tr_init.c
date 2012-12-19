@@ -107,6 +107,9 @@ cvar_t  *r_mergeMultidraws;
 cvar_t  *r_mergeLeafSurfaces;
 
 cvar_t  *r_cameraExposure;
+
+cvar_t  *r_softOverbright;
+
 cvar_t  *r_hdr;
 cvar_t  *r_postProcess;
 
@@ -931,11 +934,6 @@ void GL_SetDefaultState( void )
 	glState.currentVBO = NULL;
 	glState.currentIBO = NULL;
 
-	if (glRefConfig.framebuffer_srgb)
-	{
-		qglEnable(GL_FRAMEBUFFER_SRGB_EXT);
-	}
-
 	qglPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 	qglDepthMask( GL_TRUE );
 	qglDisable( GL_DEPTH_TEST );
@@ -1149,14 +1147,16 @@ void R_Register( void )
 	r_greyscale = ri.Cvar_Get("r_greyscale", "0", CVAR_ARCHIVE | CVAR_LATCH);
 	ri.Cvar_CheckRange(r_greyscale, 0, 1, qfalse);
 
+	r_softOverbright = ri.Cvar_Get( "r_softOverbright", "1", CVAR_ARCHIVE | CVAR_LATCH );
+
 	r_hdr = ri.Cvar_Get( "r_hdr", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_postProcess = ri.Cvar_Get( "r_postProcess", "1", CVAR_ARCHIVE );
 
 	r_toneMap = ri.Cvar_Get( "r_toneMap", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_forceToneMap = ri.Cvar_Get( "r_forceToneMap", "0", CVAR_CHEAT );
-	r_forceToneMapMin = ri.Cvar_Get( "r_forceToneMapMin", "-3.25", CVAR_CHEAT );
-	r_forceToneMapAvg = ri.Cvar_Get( "r_forceToneMapAvg", "-1.0", CVAR_CHEAT );
-	r_forceToneMapMax = ri.Cvar_Get( "r_forceToneMapMax", "1.0", CVAR_CHEAT );
+	r_forceToneMapMin = ri.Cvar_Get( "r_forceToneMapMin", "-8.0", CVAR_CHEAT );
+	r_forceToneMapAvg = ri.Cvar_Get( "r_forceToneMapAvg", "-2.0", CVAR_CHEAT );
+	r_forceToneMapMax = ri.Cvar_Get( "r_forceToneMapMax", "0.0", CVAR_CHEAT );
 
 	r_autoExposure = ri.Cvar_Get( "r_autoExposure", "1", CVAR_ARCHIVE );
 	r_forceAutoExposure = ri.Cvar_Get( "r_forceAutoExposure", "0", CVAR_CHEAT );

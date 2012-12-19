@@ -194,6 +194,20 @@ static sfxHandle_t S_AL_BufferFind(const char *filename)
 	sfxHandle_t sfx = -1;
 	int i;
 
+	if ( !filename ) {
+		Com_Error( ERR_FATAL, "Sound name is NULL" );
+	}
+
+	if ( !filename[0] ) {
+		Com_Printf( S_COLOR_YELLOW "WARNING: Sound name is empty\n" );
+		return 0;
+	}
+
+	if ( strlen( filename ) >= MAX_QPATH ) {
+		Com_Printf( S_COLOR_YELLOW "WARNING: Sound name is too long: %s\n", filename );
+		return 0;
+	}
+
 	for(i = 0; i < numSfx; i++)
 	{
 		if(!Q_stricmp(knownSfx[i].filename, filename))
@@ -1121,7 +1135,7 @@ void S_AL_UpdateEntityPosition( int entityNum, const vec3_t origin )
 
 	VectorCopy( origin, sanOrigin );
 	S_AL_SanitiseVector( sanOrigin );
-	if ( entityNum < 0 || entityNum > MAX_GENTITIES )
+	if ( entityNum < 0 || entityNum >= MAX_GENTITIES )
 		Com_Error( ERR_DROP, "S_UpdateEntityPosition: bad entitynum %i", entityNum );
 	VectorCopy( sanOrigin, entityList[entityNum].origin );
 }
@@ -1135,7 +1149,7 @@ Necessary for i.g. Western Quake3 mod which is buggy.
 */
 static qboolean S_AL_CheckInput(int entityNum, sfxHandle_t sfx)
 {
-	if (entityNum < 0 || entityNum > MAX_GENTITIES)
+	if (entityNum < 0 || entityNum >= MAX_GENTITIES)
 		Com_Error(ERR_DROP, "ERROR: S_AL_CheckInput: bad entitynum %i", entityNum);
 
 	if (sfx < 0 || sfx >= numSfx)
